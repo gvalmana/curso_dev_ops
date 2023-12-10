@@ -1,20 +1,23 @@
-# Usa una imagen base de Python
 FROM python:3.10.8-alpine
 
-# Establece el directorio de trabajo en /app
+#app directory
 WORKDIR /app
+#demo user
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 
-# Copia el archivo de requerimientos al contenedor en /app
-COPY requirements.txt .
+RUN addgroup -g ${GROUP_ID} demo \
+ && adduser -D demo -u ${USER_ID} -g demo -G demo -s /bin/sh
 
-# Instala las dependencias
-RUN pip install -r requirements.txt
+#copy files
+COPY --chown=demo . /app/
 
-# Copia todo el contenido local al contenedor en /app
-COPY . .
+#install depedencies
+RUN apk add --no-cache --virtual .build-deps gcc libc-dev make \
+    && pip install --no-cache-dir -r requirements.txt \
+    && apk del .build-deps gcc libc-dev make
 
-# Expone el puerto 8000 para que la aplicación esté disponible externamente
-EXPOSE 8000
+USER demo
 
-# Define el comando por defecto para ejecutar la aplicación
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+#entrypoint
+CMD ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8080"]
