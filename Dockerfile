@@ -8,7 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install the Python dependencies
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get upgrade -y
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN apt-get clean && apt purge
 
 # Copy the application code to the working directory
 COPY . .
