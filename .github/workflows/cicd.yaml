@@ -32,3 +32,13 @@ jobs:
       - name: docker push
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/curso-devs-fastapi-demo:${{ github.sha }}
+  cd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: whoami          
