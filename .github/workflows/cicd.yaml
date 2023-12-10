@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
-      -name: install dependencies
+        uses: actions/checkout@v4
+      - name: install dependencies
         run: |
           pip3 install -r requirements.txt
-      -name: unittest
+      - name: unittest
         run: |
           pytest test/test.py
