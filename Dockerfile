@@ -1,20 +1,20 @@
-FROM python
+# Usa una imagen base de Python
+FROM python:3.10.8-alpine
 
-#app directory
+# Establece el directorio de trabajo en /app
 WORKDIR /app
-#demo user
-ARG USER_ID=1000
-ARG GROUP_ID=1000
 
-#RUN addgroup -g ${GROUP_ID} demo && adduser -D demo -u ${USER_ID} -g demo -G demo -s /bin/bash
+# Copia el archivo de requerimientos al contenedor en /app
+COPY requirements.txt .
 
-#copy files
-COPY --chown=demo . /app/
-
-#install depedencies
+# Instala las dependencias
 RUN pip install -r requirements.txt
 
-#USER demo
+# Copia todo el contenido local al contenedor en /app
+COPY . .
 
-#entrypoint
-CMD ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8080"]
+# Expone el puerto 8000 para que la aplicación esté disponible externamente
+EXPOSE 8000
+
+# Define el comando por defecto para ejecutar la aplicación
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
