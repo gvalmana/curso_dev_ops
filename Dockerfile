@@ -1,10 +1,16 @@
 FROM python
-COPY . /app
+
+# 
 WORKDIR /app
 
-#install depedencies
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+# 
+COPY ./requirements.txt /app/requirements.txt
 
-#entrypoint
-ENTRYPOINT ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8080"]
+# 
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+# 
+COPY . /app
+
+# 
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

@@ -9,6 +9,9 @@ from .api import api
 VERSION=0.1
 app = FastAPI()
 
+@app.get("/")
+def get_status():
+    return {"status":"healthy", "version":VERSION}
 
 @app.get("/status", status_code=200)
 def get_stores():
